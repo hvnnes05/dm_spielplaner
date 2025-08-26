@@ -2,7 +2,7 @@
   <div class="p-6 max-w-5xl mx-auto flex justify-center items-center min-h-screen">
     <!-- Spieler hinzufügen -->
     <div v-if="phase === 'start'" class="space-y-2 w-full inline-flex flex-col items-center">
-      <img src="../Logo.svg" alt="" class="h-72 mx-auto mb-8" />
+      <img src="/Logo.svg" alt="" class="h-72 mx-auto mb-8" />
       
       <div class="flex flex-col gap-4 w-full">
         <h2 class="">Name</h2>
