@@ -6,16 +6,20 @@
 }
 
 @layer base {
+    html{
+        font-size: 24px;
+        @apply font-normal;
+    }
     html, h1, h2, h3, h4, h5, h6, button {
         @apply font-base uppercase;
     }
     h1{
-        @apply font-semibold text-3xl;
+        @apply font-semibold text-6xl;
+    }
+    h2{
+        @apply text-3xl font-bold;
     }
     h3{
         @apply text-2xl font-semibold;
-    }
-    html{
-        @apply text-base font-normal;
     }
 }

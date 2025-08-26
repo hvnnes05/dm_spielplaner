@@ -1,12 +1,12 @@
 <template>
   <div class="p-6 max-w-5xl mx-auto flex justify-center items-center min-h-screen">
     <!-- Spieler hinzufügen -->
-    <div v-if="phase === 'start'" class="space-y-2 w-full flex-inline flex-col justify-center">
+    <div v-if="phase === 'start'" class="space-y-2 w-full inline-flex flex-col items-center">
       <img src="../Logo.svg" alt="" class="h-72 mx-auto mb-8" />
-      <h1 class="">Name</h1>
-      <div class="flex">
-        <input v-model="newPlayer" @keyup.enter="addPlayer" placeholder="Spielername" class="border-2 p-2 flex-1" />
-        <button @click="addPlayer" class="px-4 py-2 bg-gray-900 text-white">Hinzufügen</button>
+      
+      <div class="flex flex-col gap-4 w-full">
+        <h2 class="">Name</h2>
+        <input v-model="newPlayer" @keyup.enter="addPlayer" placeholder="Spielername" class="border-2 p-2 flex-1 outline-none" />
       </div>
 
       <ul class="flex gap-2 mt-2 flex-wrap">
@@ -25,8 +25,8 @@
       </div>
 
       <button
-        :class="['mt-4 px-4 py-2 ', players.length >= 4 ? 'bg-gray-900 text-white cursor-pointer' : 'bg-gray-600 text-white cursor-not-allowed']"
-        :disabled="players.length < 4"
+        :class="['mt-4 px-4 py-2 text-2xl ', players.length >= 8 ? 'bg-gray-900 text-white cursor-pointer' : 'bg-gray-600 text-white cursor-not-allowed']"
+        :disabled="players.length < 8"
         @click="startGroups"
       >
         Gruppenphase starten
@@ -34,7 +34,7 @@
     </div>
 
     <!-- Gruppenphase -->
-    <div v-else-if="phase === 'groups'">
+    <div v-else-if="phase === 'groups'" class="w-full">
       <div class="grid grid-cols-2 gap-6">
         <div v-for="(group, gIndex) in groups" :key="gIndex" class="p-4 border-2">
           <h3 class="font-semibold mb-2">Gruppe {{ gIndex + 1 }}</h3>
@@ -51,7 +51,7 @@
                 }"
                 @click="setWinner(gIndex, mIndex, match[0], true)"
               >
-                {{ match[1] }}
+                {{ match[0] }}
               </span>
               <span class="text-center text-gray-500 text-sm">vs</span>
               <span
@@ -63,27 +63,34 @@
               >
                 {{ match[1] }}
               </span>
-
             </span>
           </div>
-          <div class="mt-2 text-sm">Siege: {{ JSON.stringify(group.wins) }}</div>
+          <div class="mt-2 text-sm">
+            Siege:
+            <span v-for="(wins, name, idx) in group.wins" :key="name">
+              {{ name }}: {{ wins }}<span v-if="idx < Object.keys(group.wins).length - 1">, </span>
+            </span>
+          </div>
         </div>
       </div>
 
       <button
         v-if="allMatchesDone"
         @click="showWinners"
-        class="mt-6 px-4 py-2 bg-blue-600 text-white rounded"
+        class="mt-6 px-4 py-2 bg-gray-900 text-white"
       >
         Sieger anzeigen
       </button>
     </div>
 
     <!-- Gewinner -->
-    <div v-else-if="phase === 'end'">
-      <h2 class="text-2xl font-bold mb-4">Gruppensieger</h2>
-      <ul class="list-disc ml-6">
-        <li v-for="(winner, index) in winners" :key="index">Gruppe {{ index + 1 }}: {{ winner }}</li>
+    <div v-else-if="phase === 'end'" class="w-full flex flex-col items-center gap-8">
+      <h1>Finale</h1>
+      <ul class="flex gap-4">
+        <li class="py-4 px-8 bg-slate-100 flex flex-col items-center gap-1" v-for="(winner, index) in winners" :key="index">
+          <span>Gruppe {{ index + 1 }}</span>
+          <h3>{{ winner }}</h3>
+        </li>
       </ul>
     </div>
   </div>
@@ -91,6 +98,7 @@
 
 <script setup>
 import { reactive, ref, computed } from 'vue'
+import confetti from 'canvas-confetti'
 
 const phase = ref('start')
 const players = reactive([])
@@ -181,6 +189,13 @@ const allMatchesDone = computed(() => {
 })
 
 function showWinners() {
+  confetti({
+      particleCount: 100,
+      spread: 100,
+      scalar: 1.2,
+      origin: { y: 0.6 },
+      colors: ['#ead88b']
+    })
   winners.value = groups.map((g) =>
     Object.entries(g.wins).sort((a, b) => b[1] - a[1])[0][0]
   )
