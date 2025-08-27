@@ -11,7 +11,7 @@
         @apply font-normal;
     }
     html, h1, h2, h3, h4, h5, h6, button {
-        @apply font-base uppercase;
+        @apply font-base uppercase font-light;
     }
     h1{
         @apply font-semibold text-6xl;
