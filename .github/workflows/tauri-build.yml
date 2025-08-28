@@ -1,0 +1,42 @@
+name: "Build Tauri App"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  tauri-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install frontend deps
+        run: npm install
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Tauri App
+        uses: tauri-apps/tauri-action@v0
+        with:
+          tagName: v__VERSION__ # optional: erstellt Release
+          releaseName: "Release v__VERSION__"
+          releaseDraft: true
+          prerelease: false
