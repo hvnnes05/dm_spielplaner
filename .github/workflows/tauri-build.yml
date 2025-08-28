@@ -3,8 +3,10 @@ name: "Build Tauri App"
 on:
   push:
     branches:
-      - main
+      - tauri
   pull_request:
+    branches:
+      - tauri
 
 jobs:
   tauri-build:
