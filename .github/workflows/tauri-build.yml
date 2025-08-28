@@ -1,13 +1,12 @@
-name: "Build Tauri App"
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+name: Build Tauri App
+
 on:
   push:
-    branches:
-      - tauri
-  pull_request:
-    branches:
-      - tauri
+    tags:
+      - "v*.*.*" # z. B. v0.1.0
+
+permissions:
+  contents: write # erlaubt Release-Erstellung
 
 jobs:
   tauri-build:
@@ -25,7 +24,22 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20.19.0
+          node-version: 20
+
+      - name: Cache Rust
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('src-tauri/Cargo.lock') }}
+
+      - name: Cache Node
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -38,8 +52,10 @@ jobs:
 
       - name: Build Tauri App
         uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: v__VERSION__ # optional: erstellt Release
-          releaseName: "Release v__VERSION__"
-          releaseDraft: true
+          tagName: ${{ github.ref_name }}
+          releaseName: "Release ${{ github.ref_name }}"
+          releaseDraft: false
           prerelease: false
