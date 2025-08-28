@@ -3,8 +3,8 @@
     <!-- Spieler hinzufügen -->
     <div v-if="phase === 'start'" class="space-y-2 w-full inline-flex flex-col items-center">
       <img src="/Logo.svg" alt="" class="h-72 mx-auto mb-8" />
-      <div class="flex flex-col gap-4 w-full">
-        <h2 class="">Name</h2>
+      <div class="flex flex-col gap-2 w-full">
+        <h3 class="">Name</h3>
         <input v-model="newPlayer" @keyup.enter="addPlayer" placeholder="Spielername" class="border-2 p-2 flex-1 outline-none" />
       </div>
 
